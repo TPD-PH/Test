@@ -8,7 +8,8 @@ export const MODEL_REGEX = /^\[Model: (.*?)\]
 /;
 export const DEFAULT_MODEL = 'claude-3-5-sonnet-20240620';
 export const DEFAULT_PROVIDER = 'Anthropic';
-
+export const DEFAULT_PROVIDER = 'Anthropic';
+export const AVAILABLE_THEMES = ['light', 'dark'];
 export const HUGGINGFACE_API_BASE_URL = import.meta.env.HUGGINGFACE_API_BASE_URL || 'https://api.huggingface.co';
 export const HUGGINGFACE_API_KEY = import.meta.env.HUGGINGFACE_API_KEY || '';
 

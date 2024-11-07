@@ -166,6 +166,14 @@ export const BaseChat = React.forwardRef<HTMLDivElement, BaseChatProps>(
                   modelList={MODEL_LIST}
                   providerList={providerList}
                 />
+                <button
+                  className="w-full p-2 mt-2 mb-4 rounded-lg border border-bolt-elements-borderColor bg-bolt-elements-prompt-background text-bolt-elements-textPrimary hover:bg-bolt-elements-item-backgroundActive transition-theme"
+                  onClick={() => {
+                    // Logic to open customization panel will be added here
+                  }}
+                >
+                  Personaliza la interfaz a tu gusto
+                </button>
                 <div
                   className={classNames(
                     'shadow-sm border border-bolt-elements-borderColor bg-bolt-elements-prompt-background backdrop-filter backdrop-blur-[8px] rounded-lg overflow-hidden',

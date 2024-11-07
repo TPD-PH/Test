@@ -15,6 +15,7 @@ import { DEFAULT_MODEL } from '~/utils/constants';
 import { cubicEasingFn } from '~/utils/easings';
 import { createScopedLogger, renderLogger } from '~/utils/logger';
 import { BaseChat } from './BaseChat';
+import { CustomizationPanel } from '../ui/CustomizationPanel';
 
 const toastAnimation = cssTransition({
   enter: 'animated fadeInRight',
@@ -58,7 +59,11 @@ export function Chat() {
         pauseOnFocusLoss
         transition={toastAnimation}
       />
-    </>
+    />
+    <CustomizationPanel
+      isOpen={isCustomizationPanelOpen}
+      onClose={() => setCustomizationPanelOpen(false)}
+    />
   );
 }
 
@@ -74,6 +79,7 @@ export const ChatImpl = memo(({ initialMessages, storeMessageHistory }: ChatProp
 
   const [chatStarted, setChatStarted] = useState(initialMessages.length > 0);
   const [model, setModel] = useState(DEFAULT_MODEL);
+  const [isCustomizationPanelOpen, setCustomizationPanelOpen] = useState(false);
 
   const { showChat } = useStore(chatStore);
 
@@ -150,6 +156,10 @@ export const ChatImpl = memo(({ initialMessages, storeMessageHistory }: ChatProp
     chatStore.setKey('started', true);
 
     setChatStarted(true);
+  };
+
+  const openCustomizationPanel = () => {
+    setCustomizationPanelOpen(true);
   };
 
   const sendMessage = async (_event: React.UIEvent, messageInput?: string) => {
