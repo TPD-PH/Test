@@ -23,7 +23,7 @@
     "preview": "pnpm run build && pnpm run start"
   },
   "engines": {
-    "node": ">=18.18.0"
+    "node": "18.18.0"
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^0.0.39",
@@ -85,6 +85,7 @@
     "remark-gfm": "^4.0.0",
     "remix-island": "^0.2.0",
     "remix-utils": "^7.6.0",
+    "@remix-run/node": "^2.10.2",
     "shiki": "^1.9.1",
     "unist-util-visit": "^5.0.0"
   },
