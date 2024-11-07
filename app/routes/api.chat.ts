@@ -5,13 +5,14 @@ import { MAX_RESPONSE_SEGMENTS, MAX_TOKENS } from '~/lib/.server/llm/constants';
 import { CONTINUE_PROMPT } from '~/lib/.server/llm/prompts';
 import { streamText, type Messages, type StreamingOptions } from '~/lib/.server/llm/stream-text';
 import SwitchableStream from '~/lib/.server/llm/switchable-stream';
+import { HUGGINGFACE_API_KEY, HUGGINGFACE_API_BASE_URL } from '~/utils/constants';
 
 export async function action(args: ActionFunctionArgs) {
   return chatAction(args);
 }
 
 async function chatAction({ context, request }: ActionFunctionArgs) {
-  const { messages } = await request.json<{ messages: Messages }>();
+  const { messages, model } = await request.json<{ messages: Messages, model: string }>();
 
   const stream = new SwitchableStream();
 
@@ -40,9 +41,31 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
       },
     };
 
-    const result = await streamText(messages, context.cloudflare.env, options);
+    let result;
+    if (model === 'Tu Desarrollador + Basado') {
+      result = await fetch(`${HUGGINGFACE_API_BASE_URL}/models/${model}/generate`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${HUGGINGFACE_API_KEY}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ inputs: messages.map(msg => msg.content).join('
+') }),
+      }).then(res => res.json());
+    } else {
+      result = await streamText(messages, context.cloudflare.env, options);
+    }
 
-    stream.switchSource(result.toAIStream());
+    if (model === 'Tu Desarrollador + Basado') {
+      stream.switchSource(new ReadableStream({
+        start(controller) {
+          controller.enqueue(result.generated_text);
+          controller.close();
+        }
+      }));
+    } else {
+      stream.switchSource(result.toAIStream());
+    }
 
     return new Response(stream.readable, {
       status: 200,
@@ -59,3 +82,4 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
     });
   }
 }
+

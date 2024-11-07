@@ -23,6 +23,9 @@ export function Header() {
         <a href="/" className="text-2xl font-semibold text-accent flex items-center">
           <span className="i-bolt:logo-text?mask w-[46px] inline-block" />
         </a>
+        <span className="ml-2 text-lg font-medium text-bolt-elements-textSecondary">
+          Tu Desarrollador + Basado
+        </span>
       </div>
       <span className="flex-1 px-4 truncate text-center text-bolt-elements-textPrimary">
         <ClientOnly>{() => <ChatDescription />}</ClientOnly>
@@ -39,3 +42,4 @@ export function Header() {
     </header>
   );
 }
+

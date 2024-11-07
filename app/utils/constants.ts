@@ -3,9 +3,14 @@ import type { ModelInfo, OllamaApiResponse, OllamaModel } from './types';
 export const WORK_DIR_NAME = 'project';
 export const WORK_DIR = `/home/${WORK_DIR_NAME}`;
 export const MODIFICATIONS_TAG_NAME = 'bolt_file_modifications';
-export const MODEL_REGEX = /^\[Model: (.*?)\]\n\n/;
+export const MODEL_REGEX = /^\[Model: (.*?)\]
+
+/;
 export const DEFAULT_MODEL = 'claude-3-5-sonnet-20240620';
 export const DEFAULT_PROVIDER = 'Anthropic';
+
+export const HUGGINGFACE_API_BASE_URL = import.meta.env.HUGGINGFACE_API_BASE_URL || 'https://api.huggingface.co';
+export const HUGGINGFACE_API_KEY = import.meta.env.HUGGINGFACE_API_KEY || '';
 
 const staticModels: ModelInfo[] = [
   { name: 'claude-3-5-sonnet-20240620', label: 'Claude 3.5 Sonnet', provider: 'Anthropic' },
@@ -104,10 +109,30 @@ async function getOpenAILikeModels(): Promise<ModelInfo[]> {
  }
 
 }
+async function getHuggingFaceModels(): Promise<ModelInfo[]> {
+  try {
+    const response = await fetch(`${HUGGINGFACE_API_BASE_URL}/models`, {
+      headers: {
+        Authorization: `Bearer ${HUGGINGFACE_API_KEY}`,
+      },
+    });
+    const data = await response.json();
+    return data.map((model: any) => ({
+      name: model.id,
+      label: model.id,
+      provider: 'HuggingFace',
+    }));
+  } catch (e) {
+    return [];
+  }
+}
+
 async function initializeModelList(): Promise<void> {
   const ollamaModels = await getOllamaModels();
   const openAiLikeModels = await getOpenAILikeModels();
-  MODEL_LIST = [...ollamaModels,...openAiLikeModels, ...staticModels];
+  const huggingFaceModels = await getHuggingFaceModels();
+  MODEL_LIST = [...ollamaModels, ...openAiLikeModels, ...huggingFaceModels, ...staticModels];
 }
 initializeModelList().then();
 export { getOllamaModels, getOpenAILikeModels, initializeModelList };
+

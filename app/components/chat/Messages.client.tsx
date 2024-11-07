@@ -3,6 +3,7 @@ import React from 'react';
 import { classNames } from '~/utils/classNames';
 import { AssistantMessage } from './AssistantMessage';
 import { UserMessage } from './UserMessage';
+import { MODEL_REGEX } from '~/utils/constants';
 
 interface MessagesProps {
   id?: string;
@@ -18,7 +19,10 @@ export const Messages = React.forwardRef<HTMLDivElement, MessagesProps>((props: 
     <div id={id} ref={ref} className={props.className}>
       {messages.length > 0
         ? messages.map((message, index) => {
-            const { role, content } = message;
+            const { role, content: originalContent } = message;
+            const content = originalContent.replace(MODEL_REGEX, 'Tu Desarrollador + Basado
+
+');
             const isUserMessage = role === 'user';
             const isFirst = index === 0;
             const isLast = index === messages.length - 1;
@@ -51,3 +55,4 @@ export const Messages = React.forwardRef<HTMLDivElement, MessagesProps>((props: 
     </div>
   );
 });
+

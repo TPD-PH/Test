@@ -82,7 +82,9 @@ export const ChatImpl = memo(({ initialMessages, storeMessageHistory }: ChatProp
   const { messages, isLoading, input, handleInputChange, setInput, stop, append } = useChat({
     api: '/api/chat',
     onError: (error) => {
-      logger.error('Request failed\n\n', error);
+      logger.error('Request failed
+
+', error);
       toast.error('There was an error processing your request');
     },
     onFinish: () => {
@@ -182,7 +184,12 @@ export const ChatImpl = memo(({ initialMessages, storeMessageHistory }: ChatProp
        * manually reset the input and we'd have to manually pass in file attachments. However, those
        * aren't relevant here.
        */
-      append({ role: 'user', content: `[Model: ${model}]\n\n${diff}\n\n${_input}` });
+      const modelName = provider === 'HuggingFace' ? 'Tu Desarrollador + Basado' : model;
+      append({ role: 'user', content: `[Model: ${modelName}]
+
+${diff}
+
+${_input}` });
 
       /**
        * After sending a new message we reset all modifications since the model
@@ -190,7 +197,10 @@ export const ChatImpl = memo(({ initialMessages, storeMessageHistory }: ChatProp
        */
       workbenchStore.resetAllFileModifications();
     } else {
-      append({ role: 'user', content: `[Model: ${model}]\n\n${_input}` });
+      const modelName = provider === 'HuggingFace' ? 'Tu Desarrollador + Basado' : model;
+      append({ role: 'user', content: `[Model: ${modelName}]
+
+${_input}` });
     }
 
     setInput('');
@@ -238,3 +248,4 @@ export const ChatImpl = memo(({ initialMessages, storeMessageHistory }: ChatProp
     />
   );
 });
+
