@@ -3,6 +3,7 @@ import React from 'react';
 import { classNames } from '~/utils/classNames';
 import { AssistantMessage } from './AssistantMessage';
 import { UserMessage } from './UserMessage';
+import { MODEL_REGEX } from '~/utils/constants';
 
 interface MessagesProps {
   id?: string;
@@ -18,7 +19,10 @@ export const Messages = React.forwardRef<HTMLDivElement, MessagesProps>((props: 
     <div id={id} ref={ref} className={props.className}>
       {messages.length > 0
         ? messages.map((message, index) => {
-            const { role, content } = message;
+            const { role, content: originalContent } = message;
+            const content = originalContent.replace(MODEL_REGEX, 'Tu Desarrollador + Basado
+
+');
             const isUserMessage = role === 'user';
             const isFirst = index === 0;
             const isLast = index === messages.length - 1;
@@ -35,14 +39,15 @@ export const Messages = React.forwardRef<HTMLDivElement, MessagesProps>((props: 
               >
                 {isUserMessage && (
                   <div className="flex items-center justify-center w-[34px] h-[34px] overflow-hidden bg-white text-gray-600 rounded-full shrink-0 self-start">
-                    <div className="i-ph:user-fill text-xl"></div>
-                  </div>
-                )}
-                <div className="grid grid-col-1 w-full">
-                  {isUserMessage ? <UserMessage content={content} /> : <AssistantMessage content={content} />}
-                </div>
+                <div className="i-ph:user-fill text-xl"></div>
               </div>
-            );
+            )}
+            <div className="grid grid-col-1 w-full">
+              {isUserMessage ? <UserMessage content={content} /> : <AssistantMessage content={content} />}
+            </div>
+          </div>
+        ))
+      : <div className="text-center w-full text-bolt-elements-textSecondary">No hay mensajes para mostrar.</div>}
           })
         : null}
       {isStreaming && (
@@ -51,3 +56,4 @@ export const Messages = React.forwardRef<HTMLDivElement, MessagesProps>((props: 
     </div>
   );
 });
+

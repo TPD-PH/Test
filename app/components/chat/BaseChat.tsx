@@ -1,7 +1,7 @@
 // @ts-nocheck
 // Preventing TS checks with files presented in the video for a better presentation.
 import type { Message } from 'ai';
-import React, { type RefCallback } from 'react';
+import React, { type RefCallback, useEffect } from 'react';
 import { ClientOnly } from 'remix-utils/client-only';
 import { Menu } from '~/components/sidebar/Menu.client';
 import { IconButton } from '~/components/ui/IconButton';
@@ -22,12 +22,22 @@ const EXAMPLE_PROMPTS = [
   { text: 'How do I center a div?' },
 ];
 
-const providerList = [...new Set(MODEL_LIST.map((model) => model.provider))]
+const providerList = [...new Set(MODEL_LIST.map((model) => model.provider)), 'HuggingFace'];
 
 const ModelSelector = ({ model, setModel, modelList, providerList }) => {
   const [provider, setProvider] = useState(DEFAULT_PROVIDER);
+  const [modelList, setModelList] = useState(modelList);
   return (
     <div className="mb-2">
+      useEffect(() => {
+        if (provider === 'HuggingFace') {
+          // Fetch HuggingFace models and update the model list
+          fetchHuggingFaceModels().then(huggingFaceModels => {
+            setModelList(huggingFaceModels);
+          });
+        }
+      }, [provider]);
+
       <select
         value={provider}
         onChange={(e) => {
@@ -42,11 +52,8 @@ const ModelSelector = ({ model, setModel, modelList, providerList }) => {
             {provider}
           </option>
         ))}
-        <option key="Ollama" value="Ollama">
-          Ollama
-        </option>
-        <option key="OpenAILike" value="OpenAILike">
-          OpenAILike
+        <option key="HuggingFace" value="HuggingFace">
+          Tu Desarrollador + Basado
         </option>
       </select>
       <select
@@ -159,6 +166,14 @@ export const BaseChat = React.forwardRef<HTMLDivElement, BaseChatProps>(
                   modelList={MODEL_LIST}
                   providerList={providerList}
                 />
+                <button
+                  className="w-full p-2 mt-2 mb-4 rounded-lg border border-bolt-elements-borderColor bg-bolt-elements-prompt-background text-bolt-elements-textPrimary hover:bg-bolt-elements-item-backgroundActive transition-theme"
+                  onClick={() => {
+                    // Logic to open customization panel will be added here
+                  }}
+                >
+                  Personaliza la interfaz a tu gusto
+                </button>
                 <div
                   className={classNames(
                     'shadow-sm border border-bolt-elements-borderColor bg-bolt-elements-prompt-background backdrop-filter backdrop-blur-[8px] rounded-lg overflow-hidden',
@@ -267,3 +282,4 @@ export const BaseChat = React.forwardRef<HTMLDivElement, BaseChatProps>(
     );
   },
 );
+
